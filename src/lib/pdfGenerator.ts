@@ -26,9 +26,9 @@ export function generateSalesReportPDF(data: SalesReportData, pageSize?: { width
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  // sensible small margins for narrow receipt paper
-  const marginLeft = 6;
-  const marginRight = 6;
+  // sensible small margins for narrow receipt paper (reduced to avoid right-side clipping)
+  const marginLeft = 2;
+  const marginRight = 2;
   const availableWidth = pageWidth - marginLeft - marginRight;
 
   // Header
@@ -191,8 +191,8 @@ export function generateInventoryReportPDF(items: any[]) {
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  const marginLeft = 6;
-  const marginRight = 6;
+  const marginLeft = 2;
+  const marginRight = 2;
   const availableWidth = pageWidth - marginLeft - marginRight;
 
   // Header
