@@ -283,8 +283,11 @@ button, a {
   body * {
     visibility: hidden;
   }
-  
-  .receipt-content, .receipt-content * {
+
+  /* Only print receipt content that is inside an explicit print-only container.
+     This prevents on-screen previews (also using .receipt-content) from being
+     printed twice. */
+  .print-only .receipt-content, .print-only .receipt-content * {
     visibility: visible !important;
   }
 
