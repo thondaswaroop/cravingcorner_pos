@@ -22,7 +22,7 @@ interface SalesReportData {
 export function generateSalesReportPDF(data: SalesReportData, pageSize?: { widthMm: number; heightMm: number }) {
   const doc = pageSize
     ? new jsPDF({ unit: "mm", format: [pageSize.widthMm, pageSize.heightMm] })
-    : new jsPDF();
+    : new jsPDF({ unit: "mm", format: [72, 3276] });
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -156,13 +156,13 @@ export function generateSalesReportPDF(data: SalesReportData, pageSize?: { width
     body: recentOrdersData,
     theme: "striped",
     headStyles: { fillColor: [100, 100, 100], textColor: [255, 255, 255] },
-    styles: { fontSize: 9 },
+    styles: { fontSize: 9, cellPadding: 1 },
     margin: { left: marginLeft, right: marginRight },
     columnStyles: {
-      0: { cellWidth: availableWidth * 0.25 },
+      0: { cellWidth: availableWidth * 0.2 },
       1: { cellWidth: availableWidth * 0.3 },
-      2: { cellWidth: availableWidth * 0.2, halign: "center" },
-      3: { cellWidth: availableWidth * 0.25, halign: "right" },
+      2: { cellWidth: availableWidth * 0.15, halign: "center" },
+      3: { cellWidth: availableWidth * 0.35, halign: "right" },
     },
   });
   
