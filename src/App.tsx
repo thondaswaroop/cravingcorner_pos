@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ReceiptPrinterProvider } from "./components/pos/ReceiptPrinterProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -112,27 +113,31 @@ const App = () => {
   if (!user) {
     return (
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Login />
-          <Toaster />
-          <Sonner />
-        </TooltipProvider>
+        <ReceiptPrinterProvider>
+          <TooltipProvider>
+            <Login />
+            <Toaster />
+            <Sonner />
+          </TooltipProvider>
+        </ReceiptPrinterProvider>
       </QueryClientProvider>
     );
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+      <ReceiptPrinterProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ReceiptPrinterProvider>
     </QueryClientProvider>
   );
 };
