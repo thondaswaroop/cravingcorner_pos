@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/currency";
 import { useSettings } from "@/hooks/useSettings";
 import { Receipt } from "./Receipt";
+import { useReceiptPrinter } from "./ReceiptPrinterProvider";
 
 interface CheckoutDialogProps {
   open: boolean;
@@ -86,8 +87,11 @@ export const CheckoutDialog = ({ open, onClose, cart, customer, onConfirm }: Che
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const { printOrder } = useReceiptPrinter();
+
+  const handlePrint = async () => {
+    if (!completedOrder || !orderSnapshot) return;
+    await printOrder({ orderId: completedOrder.id, snapshot: { ...orderSnapshot, createdAt: completedOrder.created_at, pointsEarned: completedOrder.points_earned } });
   };
 
   const handleClose = () => {
@@ -127,20 +131,7 @@ export const CheckoutDialog = ({ open, onClose, cart, customer, onConfirm }: Che
               />
             </div>
 
-            {/* Receipt for printing - hidden on screen */}
-            <Receipt
-              orderId={completedOrder.id}
-              createdAt={completedOrder.created_at}
-              transactionNo={orderSnapshot.transactionNo}
-              paymentMethod={orderSnapshot.paymentMethod}
-              items={orderSnapshot.cart}
-              subtotal={orderSnapshot.subtotal}
-              tax={orderSnapshot.tax}
-              discount={orderSnapshot.discount + orderSnapshot.pointsDiscount}
-              total={orderSnapshot.total}
-              pointsEarned={completedOrder.points_earned}
-              className="print-only"
-            />
+            {/* Printing handled by ReceiptPrinterProvider (no hidden local receipt needed) */}
 
             <div className="flex gap-3 mt-6">
               <Button variant="outline" onClick={handlePrint} className="flex-1">

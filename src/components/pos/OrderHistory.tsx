@@ -11,7 +11,9 @@ import { Search, Receipt as ReceiptIcon, User, Calendar, CreditCard, Package, Pr
 import { formatCurrency } from "@/lib/currency";
 import { Order, OrderItem } from "@/types/pos";
 import { useSettings } from "@/hooks/useSettings";
-import { Receipt } from "./Receipt";
+// Receipt is printed via ReceiptPrinterProvider now
+// import { Receipt } from "./Receipt";
+import { useReceiptPrinter } from "./ReceiptPrinterProvider";
 import {
   Dialog,
   DialogContent,
@@ -32,8 +34,11 @@ export const OrderHistory = () => {
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const { data: settings } = useSettings();
 
-  const handlePrint = () => {
-    window.print();
+  const { printOrder } = useReceiptPrinter();
+
+  const handlePrint = async () => {
+    if (!orderDetails || !orderDetails.order) return;
+    await printOrder({ orderId: orderDetails.order.id });
   };
 
   // Fetch last 20 orders with customer info
@@ -376,19 +381,7 @@ export const OrderHistory = () => {
                 </Button>
               </div>
 
-              {/* Hidden Receipt for Printing */}
-              <Receipt
-                orderId={orderDetails.order.id}
-                createdAt={orderDetails.order.created_at}
-                paymentMethod={orderDetails.order.payment_method}
-                items={orderDetails.items}
-                subtotal={orderDetails.order.subtotal}
-                tax={orderDetails.order.tax}
-                discount={orderDetails.order.discount}
-                total={orderDetails.order.total}
-                pointsEarned={orderDetails.order.points_earned}
-                className="print-only"
-              />
+              {/* Printing handled by ReceiptPrinterProvider */}
             </div>
           )}
         </DialogContent>
