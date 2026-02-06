@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useOrders, useOrderWithItems } from "@/hooks/useOrders";
 import { useCustomers } from "@/hooks/useCustomers";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 import { DollarSign, ShoppingBag, TrendingUp, Users, FileDown, ChevronDown, ChevronUp, Receipt, Search, Filter, X } from "lucide-react";
 import { format, subDays, startOfDay, endOfDay, eachDayOfInterval } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 import { formatCurrency } from "@/lib/currency";
 import { generateSalesReportPDF } from "@/lib/pdfGenerator";
 import { Button } from "@/components/ui/button";
@@ -17,10 +19,12 @@ import { Label } from "@/components/ui/label";
 const COLORS = ["hsl(32, 95%, 55%)", "hsl(160, 70%, 45%)", "hsl(45, 95%, 55%)", "hsl(0, 75%, 55%)"];
 
 export const SalesReports = () => {
-  const [dateRange] = useState({
+  const [dateRange, setDateRange] = useState({
     start: subDays(new Date(), 30),
     end: new Date(),
   });
+  const [startInput, setStartInput] = useState(format(dateRange.start, "yyyy-MM-dd"));
+  const [endInput, setEndInput] = useState(format(dateRange.end, "yyyy-MM-dd"));
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [showAllOrders, setShowAllOrders] = useState(false);
   const [filterDate, setFilterDate] = useState("");
@@ -32,11 +36,28 @@ export const SalesReports = () => {
   const { data: expandedOrderData } = useOrderWithItems(expandedOrderId || "");
   const { toast } = useToast();
 
+
+  // previous period for delta comparison
+  const prevRange = useMemo(() => {
+    const days = (dateRange.end.getTime() - dateRange.start.getTime()) / (1000 * 60 * 60 * 24) + 1;
+    const prevEnd = subDays(dateRange.start, 1);
+    const prevStart = subDays(prevEnd, days - 1);
+    return { start: prevStart, end: prevEnd };
+  }, [dateRange]);
+
+  const prevRevenue = useMemo(() => {
+    const prevOrders = orders.filter((o) => {
+      const d = new Date(o.created_at);
+      return d >= prevRange.start && d <= prevRange.end;
+    });
+    return prevOrders.reduce((s, o) => s + Number(o.total || 0), 0);
+  }, [orders, prevRange]);
+
   const stats = useMemo(() => {
-    const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+    const totalRevenue = orders.reduce((sum, o) => sum + Number(o.total || 0), 0);
     const totalOrders = orders.length;
     const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
-    const totalTax = orders.reduce((sum, o) => sum + (o.tax || 0), 0);
+    const totalTax = orders.reduce((sum, o) => sum + Number(o.tax || 0), 0);
 
     return { totalRevenue, totalOrders, avgOrderValue, totalTax };
   }, [orders]);
@@ -54,7 +75,7 @@ export const SalesReports = () => {
       
       return {
         date: format(day, "MMM dd"),
-        revenue: dayOrders.reduce((sum, o) => sum + o.total, 0),
+        revenue: dayOrders.reduce((sum, o) => sum + Number(o.total || 0), 0),
         orders: dayOrders.length,
       };
     });
@@ -64,7 +85,7 @@ export const SalesReports = () => {
     const methods: Record<string, number> = {};
     orders.forEach((o) => {
       const method = o.payment_method || "cash";
-      methods[method] = (methods[method] || 0) + o.total;
+      methods[method] = (methods[method] || 0) + Number(o.total || 0);
     });
     
     return Object.entries(methods).map(([name, value]) => ({
@@ -101,6 +122,29 @@ export const SalesReports = () => {
 
     return filtered;
   }, [orders, filterDate, filterTransactionId, filterCustomerName, customers]);
+
+  // Fetch order items for filtered orders to compute top products
+  const { data: orderItems = [] } = useQuery({
+    queryKey: ["order-items", filteredOrders.map((o) => o.id).join(",")],
+    queryFn: async () => {
+      if (filteredOrders.length === 0) return [];
+      const ids = filteredOrders.map((o) => o.id);
+      const { data, error } = await supabase.from("order_items").select("*").in("order_id", ids);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const topProducts = useMemo(() => {
+    const map: Record<string, { name: string; qty: number; revenue: number }> = {};
+    (orderItems as any[]).forEach((it: any) => {
+      const key = it.product_id || it.product_name;
+      if (!map[key]) map[key] = { name: it.product_name, qty: 0, revenue: 0 };
+      map[key].qty += it.quantity || 0;
+      map[key].revenue += (it.total_price || (it.unit_price || 0) * (it.quantity || 0));
+    });
+    return Object.values(map).sort((a, b) => b.qty - a.qty).slice(0, 6);
+  }, [orderItems]);
 
   const clearFilters = () => {
     setFilterDate("");

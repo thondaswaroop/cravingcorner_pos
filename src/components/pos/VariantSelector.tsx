@@ -27,7 +27,7 @@ export const VariantSelector = ({ product, open, onClose, onSelectVariant }: Var
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[80vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
@@ -36,7 +36,7 @@ export const VariantSelector = ({ product, open, onClose, onSelectVariant }: Var
           <p className="text-sm text-muted-foreground">Choose a size or option</p>
         </DialogHeader>
 
-        <div className="space-y-2 py-4">
+        <div className="space-y-2 py-4 overflow-hidden">
           {variants.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
@@ -44,7 +44,8 @@ export const VariantSelector = ({ product, open, onClose, onSelectVariant }: Var
               <p className="text-xs mt-1">Please add variants in Product Management</p>
             </div>
           ) : (
-            variants.map((variant) => {
+            <div className="overflow-y-auto max-h-[60vh] space-y-2">
+            {variants.map((variant) => {
               const isAvailable = variant.is_available;
               
               return (
@@ -81,7 +82,8 @@ export const VariantSelector = ({ product, open, onClose, onSelectVariant }: Var
                   </div>
                 </Button>
               );
-            })
+            })}
+            </div>
           )}
         </div>
 

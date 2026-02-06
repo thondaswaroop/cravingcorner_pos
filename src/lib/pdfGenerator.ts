@@ -79,8 +79,8 @@ export function generateSalesReportPDF(data: SalesReportData, pageSize?: { width
 
   const paymentData = data.paymentMethods.map((pm) => [
     pm.name,
-    formatCurrency(pm.value),
-    `${((pm.value / data.totalRevenue) * 100).toFixed(1)}%`,
+    formatCurrency(Number(pm.value || 0)),
+    `${(data.totalRevenue ? ((Number(pm.value || 0) / Number(data.totalRevenue)) * 100).toFixed(1) : "0.0")}%`,
   ]);
 
   autoTable(doc, {
@@ -113,7 +113,7 @@ export function generateSalesReportPDF(data: SalesReportData, pageSize?: { width
   const dailySalesData = data.dailySales.map((ds) => [
     ds.date,
     ds.orders.toString(),
-    formatCurrency(ds.revenue),
+    formatCurrency(Number(ds.revenue || 0)),
   ]);
   
   autoTable(doc, {
@@ -147,7 +147,7 @@ export function generateSalesReportPDF(data: SalesReportData, pageSize?: { width
     `#${order.id.slice(0, 8)}`,
     format(new Date(order.created_at), "dd MMM HH:mm"),
     (order.payment_method || "cash").toUpperCase(),
-    formatCurrency(order.total),
+    formatCurrency(Number(order.total || 0)),
   ]);
   
   autoTable(doc, {

@@ -103,11 +103,11 @@ export const CheckoutDialog = ({ open, onClose, cart, customer, onConfirm }: Che
     onClose();
   };
 
-  if (completedOrder && orderSnapshot) {
+    if (completedOrder && orderSnapshot) {
     return (
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="bg-card border-border max-w-md">
-          <div className="text-center py-6">
+        <DialogContent className="bg-card border-border max-w-md max-h-[85vh] overflow-y-auto">
+          <div className="text-center py-6 px-6">
             <div className="w-16 h-16 bg-success/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Check className="w-8 h-8 text-success" />
             </div>
@@ -115,7 +115,7 @@ export const CheckoutDialog = ({ open, onClose, cart, customer, onConfirm }: Che
             <p className="text-muted-foreground">Order #{completedOrder.id.slice(0, 8)}</p>
             
             {/* Receipt preview - visible on screen */}
-            <div className="mt-6 p-4 bg-card text-foreground rounded-lg text-left text-sm font-mono border-2 border-dashed border-border max-h-[70vh] overflow-y-auto">
+            <div className="mt-6 p-4 bg-card text-foreground rounded-lg text-left text-sm font-mono border-2 border-dashed border-border max-h-[60vh] overflow-y-auto">
               <Receipt
                 orderId={completedOrder.id}
                 createdAt={completedOrder.created_at}
