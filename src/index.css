@@ -1,0 +1,381 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* 
+     * COLOR THEME: Yellow, Black & White
+     * To change colors, edit src/config/theme.config.ts
+     * 
+     * Current palette:
+     * - Primary: Bright Yellow (#FFD700)
+     * - Background: Soft Black (#141414)
+     * - Text: Off White (#F2F2F2)
+     */
+    
+    /* Background colors */
+    --background: 0 0% 8%;           /* Soft black background */
+    --foreground: 0 0% 95%;          /* Off-white text */
+
+    /* Card colors */
+    --card: 0 0% 12%;                /* Slightly lighter black for cards */
+    --card-foreground: 0 0% 95%;     /* Off-white text on cards */
+
+    /* Popover colors */
+    --popover: 0 0% 12%;             /* Same as card */
+    --popover-foreground: 0 0% 95%;  /* Off-white text */
+
+    /* PRIMARY: Bright Yellow */
+    --primary: 45 100% 50%;          /* Bright yellow - main brand color */
+    --primary-foreground: 0 0% 0%;   /* Black text on yellow */
+
+    /* SECONDARY: Darker background */
+    --secondary: 0 0% 20%;           /* Dark gray for secondary elements */
+    --secondary-foreground: 0 0% 95%; /* Off-white text */
+
+    /* Muted colors */
+    --muted: 0 0% 15%;               /* Muted background */
+    --muted-foreground: 0 0% 70%;    /* Muted gray text */
+
+    /* ACCENT: Lighter yellow for highlights */
+    --accent: 45 100% 60%;           /* Lighter yellow for hover states */
+    --accent-foreground: 0 0% 0%;    /* Black text on accent */
+
+    /* Destructive/Error: Red */
+    --destructive: 0 84% 60%;        /* Red for errors */
+    --destructive-foreground: 0 0% 100%; /* White text on red */
+
+    /* Border & Input */
+    --border: 0 0% 20%;              /* Dark border */
+    --input: 0 0% 20%;               /* Dark input background */
+    --ring: 45 100% 50%;             /* Yellow focus ring */
+
+    /* Border radius */
+    --radius: 0.75rem;
+
+    /* SUCCESS: Green */
+    --success: 142 76% 36%;          /* Green for success */
+    --success-foreground: 0 0% 100%; /* White text on green */
+    
+    /* WARNING: Orange */
+    --warning: 25 95% 53%;           /* Orange for warnings */
+    --warning-foreground: 0 0% 0%;   /* Black text on orange */
+
+    /* SIDEBAR: Uses same color scheme */
+    --sidebar-background: 0 0% 8%;   /* Soft black */
+    --sidebar-foreground: 0 0% 95%;  /* Off-white text */
+    --sidebar-primary: 45 100% 50%;  /* Yellow highlight */
+    --sidebar-primary-foreground: 0 0% 0%; /* Black text */
+    --sidebar-accent: 0 0% 15%;      /* Dark gray for selected items */
+    --sidebar-accent-foreground: 0 0% 95%; /* Off-white text */
+    --sidebar-border: 0 0% 20%;      /* Dark border */
+    --sidebar-ring: 45 100% 50%;     /* Yellow focus ring */
+
+    /* Custom tokens - Yellow, Black & White gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(45 100% 50%), hsl(42 100% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(45 100% 60%), hsl(48 100% 55%));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 14%), hsl(0 0% 10%));
+    --shadow-glow: 0 0 40px hsl(45 100% 50% / 0.2); /* Yellow glow */
+    --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.4);   /* Black shadow */
+  }
+
+  .dark {
+    /* Dark mode uses same colors (already dark theme) */
+    --background: 0 0% 8%;
+    --foreground: 0 0% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-card/80 backdrop-blur-xl border border-border/50;
+  }
+  
+  /* Yellow glow effect for primary elements */
+  .glow-primary {
+    box-shadow: 0 0 30px hsl(45 100% 50% / 0.3);
+  }
+  
+  /* Lighter yellow glow for accent elements */
+  .glow-accent {
+    box-shadow: 0 0 30px hsl(45 100% 60% / 0.3);
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Horizontal scroll for tabs */
+  .overflow-x-auto.flex-nowrap {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted)) transparent;
+  }
+
+  .overflow-x-auto.flex-nowrap::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .overflow-x-auto.flex-nowrap::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted));
+    border-radius: 2px;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  .animate-pulse-soft {
+    animation: pulseSoft 2s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  /* Better touch targets */
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent zoom on input focus on iOS */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Better spacing on mobile */
+  .space-y-6 > * + * {
+    margin-top: 1rem;
+  }
+  
+  /* Optimize tables for mobile */
+  table {
+    font-size: 0.875rem;
+  }
+  
+  th, td {
+    padding: 0.5rem !important;
+  }
+
+  /* Scrollbar hide for mobile */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Better touch targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Better touch interaction */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+button, a {
+  touch-action: manipulation;
+}
+
+/* Print styles for receipts */
+@media print {
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+  
+  .receipt-content, .receipt-content * {
+    visibility: visible !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+  
+  .receipt-content {
+    position: absolute;
+    left: 0 !important;
+    top: 0 !important;
+    width: 70mm !important;
+    max-width: 70mm !important;
+    margin: 0 5mm !important;
+    padding: 2mm 3mm !important;
+    background: white !important;
+    color: black !important;
+    font-size: 8.5pt !important;
+    box-sizing: border-box !important;
+    font-family: 'Courier New', monospace !important;
+  }
+  
+  .receipt-content * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .receipt-content .border-border,
+  .receipt-content .border-b,
+  .receipt-content .border-t {
+    border-color: #000 !important;
+  }
+  
+  .receipt-content .text-muted-foreground {
+    color: #666 !important;
+  }
+  
+  .receipt-content .text-accent,
+  .receipt-content .text-success,
+  .receipt-content .text-primary {
+    color: #000 !important;
+  }
+
+  /* Hide rounded borders and shadows */
+  .receipt-content .rounded-lg,
+  .receipt-content .border-2,
+  .receipt-content .border-dashed,
+  .receipt-content .shadow-lg {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Ensure proper text wrapping */
+  .receipt-content * {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+  }
+
+  /* Optimize flex layout */
+  .receipt-content .flex {
+    display: flex !important;
+    width: 100% !important;
+  }
+
+  .receipt-content .justify-between {
+    justify-content: space-between !important;
+  }
+
+  /* Ensure right-aligned content doesn't overflow */
+  .receipt-content .flex-1 {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    padding-right: 4px !important;
+  }
+
+  .receipt-content .font-semibold,
+  .receipt-content .text-right {
+    text-align: right !important;
+    white-space: nowrap !important;
+  }
+}
+
+/* Hide print-only content on screen */
+.print-only {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block !important;
+  }
+}
+
